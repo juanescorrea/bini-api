@@ -1,0 +1,1 @@
+{"virtualbox":{"/home/vagrant/bini-api":{"type":null,"mount_options":[],"guestpath":"/home/vagrant/bini-api","hostpath":"/Users/juanestebancorrea/Homestead/Projects/bini-api","disabled":false},"/vagrant":{"guestpath":"/vagrant","hostpath":"/Users/juanestebancorrea/Homestead/Projects/bini-api","disabled":false}}}
