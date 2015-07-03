@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\UserLogin;
+use App\Http\Requests\CreateUserRequest;
 
 class UserController extends Controller
 {
@@ -22,23 +23,17 @@ class UserController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @return Response
      */
-    public function store()
+    public function store(CreateUserRequest $request)
     {
-        //
+        //$values = $request->only(['name','email','login_name','bio','picture_url','facebook_id','twitter_id','social_network_flag','password']);
+        $values = $request->except(['id','created_at','updated_at']);
+        UserLogin::create($values);
+        return response()->json(['message'=>'User correctly added'],201);
+
     }
 
     /**
@@ -49,18 +44,11 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return Response
-     */
-    public function edit($id)
-    {
-        //
+        $user = UserLogin::find($id);
+        if(!$user){
+            return response()->json(['message'=>'this user does not exit','code' =>404],404);
+        }
+        return response()->json(['data'=>$user],200);
     }
 
     /**
@@ -69,9 +57,30 @@ class UserController extends Controller
      * @param  int  $id
      * @return Response
      */
-    public function update($id)
+    public function update(CreateUserRequest $request,$id)
     {
-        //
+        $user = UserLogin::find($id);
+        if(!$user){
+            return response()->json(['message'=>'this user does not exit','code' =>404],404);
+        }
+        $name = $request->get('name');
+        $email = $request->get('email');
+        $bio = $request->get('bio');
+        $picture_url = $request->get('picture_url');
+        $password = $request->get('password');
+
+        $user->name = $name;
+        $user->email = $email;
+        $user->bio = $bio;
+        $user->picture_url = $picture_url;
+        $user->password = $password;
+
+        $user->save();
+
+        return response()->json(['message'=>'The user info has been updated'],200);
+
+                //$values = $request->only(['name','email','login_name','bio','picture_url','facebook_id','twitter_id','social_network_flag','password']);
+
     }
 
     /**
@@ -82,6 +91,15 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $user = UserLogin::find($id);
+        if(!$user){
+            return response()->json(['message'=>'this user does not exit','code' =>404],404);
+        }
+        //$vehicles= $maker->vehicles;
+        //if(sizeof($vehicles) > 0 ){
+            //return response()->json(['message'=>'this maker has associated vehicles. Delete his vehicles first.','code' =>409],409);
+        //}
+        $user->delete();
+        return response()->json(['message'=>'the user was successfuly deleted','code' =>200],200);
     }
 }
